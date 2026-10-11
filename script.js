@@ -1,16 +1,1 @@
-const menuToggle = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('.nav-links');
-menuToggle?.addEventListener('click', () => {
-  const isOpen = navLinks.classList.toggle('open');
-  menuToggle.setAttribute('aria-expanded', String(isOpen));
-});
-document.querySelectorAll('.nav-links a').forEach((link) => link.addEventListener('click', () => {
-  navLinks.classList.remove('open');
-  menuToggle?.setAttribute('aria-expanded', 'false');
-}));
-
-const revealItems = document.querySelectorAll('.project-card, .split-section, .research-feature');
-const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-  if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
-}), { threshold: 0.12 });
-revealItems.forEach((item) => observer.observe(item));
+const menuToggle=document.querySelector('.menu-toggle');const nav=document.querySelector('.nav');menuToggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.firstChild.textContent=open?'Close ':'Menu '});document.querySelectorAll('.nav a').forEach(link=>link.addEventListener('click',()=>{nav.classList.remove('open');menuToggle?.setAttribute('aria-expanded','false');if(menuToggle)menuToggle.firstChild.textContent='Menu '}));const reveal=document.querySelectorAll('.work-item,.about-content,.insight-card');const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});reveal.forEach(item=>{item.style.opacity='0';item.style.transform='translateY(18px)';item.style.transition='opacity .7s ease, transform .7s ease';observer.observe(item)});const style=document.createElement('style');style.textContent='.visible{opacity:1!important;transform:none!important}';document.head.appendChild(style);

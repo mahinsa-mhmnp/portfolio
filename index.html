@@ -2,53 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="M Nethmina Perera — finance, data, research and software portfolio." />
-  <title>M Nethmina Perera — Digital Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>M Nethmina Perera — Actuarial Analyst & Data Storyteller</title>
+  <meta name="description" content="M Nethmina Perera is an actuarial analyst and financial mathematics undergraduate building clear, data-led solutions." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="cursor-glow" aria-hidden="true"></div>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="M Nethmina Perera home"><span>MN</span><strong>NETHMINA<span>.</span></strong></a>
-    <nav class="desktop-nav" aria-label="Main navigation"><a href="#work">Work</a><a href="#about">About</a><a href="#notes">Notes</a><a href="#contact" class="nav-pill">Let&apos;s talk <b>↗</b></a></nav>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">Menu <i></i></button>
+  <div class="progress" id="progress"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="M Nethmina Perera home"><span class="brand-mark">MN</span><span>nethmina<span class="dot">.</span></span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+    <nav id="site-nav" aria-label="Primary navigation">
+      <a class="active" href="#top">Home</a><a href="#about">About</a><a href="#work">Work</a><a href="#thinking">Thinking</a><a href="#contact">Contact</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle color theme">◐</button>
+    </nav>
   </header>
-  <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation"><a href="#work">Work</a><a href="#about">About</a><a href="#notes">Notes</a><a href="#contact">Let&apos;s talk ↗</a></nav>
 
-  <main id="top">
-    <section class="hero shell">
-      <div class="hero-copy">
-        <div class="availability"><span></span> Open to meaningful opportunities <small>● 2025</small></div>
-        <h1>Building clarity<br />from <i>complexity.</i></h1>
-        <p class="hero-lede">I&apos;m <b>M Nethmina Perera</b> — a finance and technology student creating thoughtful research, useful software, and better ways to understand data.</p>
-        <div class="hero-buttons"><a class="button button-lime" href="#work">Explore my work <span>↗</span></a><a class="text-link" href="assets/documents/myresume.pdf" download>Download CV <span>↓</span></a></div>
-        <div class="hero-meta"><span>01</span><div></div><span>Scroll to explore</span></div>
+  <main>
+    <section class="hero section-shell">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="status-dot"></span> Available for analytical opportunities</p>
+        <h1>Turning uncertainty<br /><em>into direction.</em></h1>
+        <p class="hero-lede">I’m <strong>M. Nethmina Perera</strong> — an actuarial analyst and financial mathematics undergraduate who makes complex data useful, understandable, and actionable.</p>
+        <div class="hero-actions"><a class="button button-dark" href="#work">Explore my work <span>↗</span></a><a class="text-link" href="assets/CV_mahinsa_nethmina.pdf" download>Download CV <span>↓</span></a></div>
+        <div class="hero-meta"><span><b>01</b> Pannala, Sri Lanka</span><span><b>02</b> Fin. Math & Industrial Stats</span></div>
       </div>
-      <div class="hero-visual">
-        <div class="portrait-wrap"><div class="portrait-ring"></div><img src="assets/images/propic.png" alt="Portrait of M Nethmina Perera" /><div class="portrait-card"><span>Currently studying</span><strong>Finance &amp; Technology</strong></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div></div>
-        <div class="visual-caption"><span>Colombo, Sri Lanka</span><span>06°55&apos;N / 79°51&apos;E</span></div>
-      </div>
+      <div class="hero-visual reveal delay-1"><div class="portrait-frame"><img src="assets/images/propic.jpg" alt="M Nethmina Perera" /><div class="portrait-label">ANALYST / RESEARCHER<br /><span>Always learning</span></div></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="float-card"><span class="card-kicker">CURRENT FOCUS</span><strong>Risk, models<br />& better decisions</strong><span class="card-arrow">↗</span></div><div class="grid-stamp">DATA<br /><span>×</span><br />STORY</div></div>
     </section>
 
-    <section class="marquee" aria-label="Areas of expertise"><div>RESEARCH <b>✦</b> FINANCE <b>✦</b> SOFTWARE <b>✦</b> STRATEGY <b>✦</b> RESEARCH <b>✦</b> FINANCE <b>✦</b> SOFTWARE <b>✦</b> STRATEGY <b>✦</b></div></section>
+    <section class="signal-strip"><div><span class="mono">01</span><strong>Build with clarity</strong><p>Simple outputs from complex inputs.</p></div><div><span class="mono">02</span><strong>Think in systems</strong><p>Context before conclusions.</p></div><div><span class="mono">03</span><strong>Stay curious</strong><p>Every dataset has a story.</p></div></section>
 
-    <section id="work" class="section shell work-section"><div class="section-heading"><div><span class="kicker">01 / Selected work</span><h2>Ideas made <i>tangible.</i></h2></div><p>Projects where research meets real-world thinking.</p></div><div class="filters" role="group" aria-label="Filter projects"><button class="filter active" data-filter="all">All projects</button><button class="filter" data-filter="research">Research</button><button class="filter" data-filter="finance">Finance</button><button class="filter" data-filter="build">Builds</button></div><div class="project-grid">
-      <a class="project-card project-large" data-category="finance research" href="assets/documents/CSE_Portfolio_Risk_Analysis_MHMN_Perera.pdf" target="_blank"><div class="project-art art-green"><img src="assets/images/CSE.png" alt="Colombo Stock Exchange analysis visual" /><span class="project-index">01</span><span class="project-arrow">↗</span></div><div class="project-info"><span class="tag">Finance / Research</span><h3>Portfolio Risk Analysis</h3><p>Understanding risk, return, and diversification across the Colombo Stock Exchange.</p></div></a>
-      <a class="project-card" data-category="finance research" href="assets/documents/Modern_Portfolio_Optimization_SriLanka.pdf" target="_blank"><div class="project-art art-orange"><img src="assets/images/MPT.png" alt="Modern portfolio theory visual" /><span class="project-index">02</span><span class="project-arrow">↗</span></div><div class="project-info"><span class="tag">Finance / Strategy</span><h3>Modern Portfolio Optimization</h3><p>Applying Markowitz theory to build smarter investment strategies.</p></div></a>
-      <a class="project-card" data-category="build" href="assets/documents/casestudy1.pdf" target="_blank"><div class="project-art art-blue"><img src="assets/images/javaoop.webp" alt="Java object-oriented programming project" /><span class="project-index">03</span><span class="project-arrow">↗</span></div><div class="project-info"><span class="tag">Technology / Build</span><h3>Java OOP Projects</h3><p>Building maintainable systems through object-oriented thinking.</p></div></a>
-    </div></section>
+    <section class="section-shell about-section" id="about"><div class="section-heading reveal"><p class="eyebrow">A little context</p><h2>Numbers are only<br /><em>the beginning.</em></h2></div><div class="about-content reveal delay-1"><p>I’m currently pursuing a B.Sc. Honours in Financial Mathematics and Industrial Statistics at the University of Ruhuna while working as an Actuarial Analyst Intern.</p><p>My work sits at the intersection of mathematical thinking, business context, and human decisions. I enjoy finding the signal in noisy data — from insurance claims and reserving to portfolio risk and predictive modelling.</p><div class="about-facts"><div><span class="mono">EDUCATION</span><strong>University of Ruhuna</strong></div><div><span class="mono">TOOLKIT</span><strong>R · Python · Excel</strong></div><div><span class="mono">INTERESTS</span><strong>Risk · Research · Finance</strong></div></div></div></section>
 
-    <section id="about" class="section about-section shell"><div class="kicker">02 / A little about me</div><div class="about-layout"><h2>Curious enough<br />to ask <i>why.</i></h2><div class="about-copy"><p>I&apos;m interested in the space between numbers and people. My work moves between financial analysis, statistical research, and software development — always with a focus on making complex ideas easier to use.</p><p>When I&apos;m not studying or building, I&apos;m learning something new, documenting the process, or looking for the next problem worth solving.</p><a href="assets/documents/CV_mahinsa_nethmina.pdf" target="_blank" class="text-link">More about my journey <span>↗</span></a></div></div><div class="principles"><div><strong>01</strong><span>Think in systems</span></div><div><strong>02</strong><span>Stay relentlessly curious</span></div><div><strong>03</strong><span>Make it useful</span></div></div></section>
+    <section class="work-section section-shell" id="work"><div class="section-heading split reveal"><div><p class="eyebrow">Selected work</p><h2>Projects with<br /><em>purpose.</em></h2></div><p class="heading-note">A selection of research, finance, and modelling work — each one an exercise in making better decisions.</p></div><div class="filters reveal" role="tablist" aria-label="Filter projects"><button class="filter active" data-filter="all">All work</button><button class="filter" data-filter="research">Research</button><button class="filter" data-filter="finance">Finance</button><button class="filter" data-filter="modelling">Modelling</button></div><div class="project-grid" id="projectGrid"><article class="project-card project-feature reveal" data-category="finance"><div class="project-image image-blue"><img src="assets/images/CSE.png" alt="Portfolio risk analysis visual" loading="lazy" /><span class="project-number">01 / 06</span></div><div class="project-info"><span class="mono">FINANCE · 2024</span><h3>Portfolio risk & return analysis</h3><p>Exploring expected returns, beta, VaR, and Treynor ratios across the Colombo Stock Exchange.</p><a href="assets/documents/CSE_Portfolio_Risk_Analysis_MHMN_Perera.pdf" target="_blank" class="project-link">Read report ↗</a></div></article><article class="project-card reveal delay-1" data-category="research"><div class="project-image image-warm"><img src="assets/images/research card 1.png" alt="E-banking research" loading="lazy" /></div><div class="project-info"><span class="mono">RESEARCH · 2023</span><h3>E-banking & student loyalty</h3><p>A social research study on service quality, satisfaction, and loyalty.</p><a href="assets/documents/socialresearch1.pdf" target="_blank" class="project-link">View study ↗</a></div></article><article class="project-card reveal delay-2" data-category="modelling"><div class="project-image image-green"><img src="assets/images/casestudy card 1.webp" alt="Restaurant revenue analysis" loading="lazy" /></div><div class="project-info"><span class="mono">MODELLING · 2023</span><h3>What drives restaurant revenue?</h3><p>Multiple linear regression connecting marketing spend, pricing, and customer count.</p><a href="assets/documents/casestudy1.pdf" target="_blank" class="project-link">View case study ↗</a></div></article><article class="project-card reveal" data-category="finance"><div class="project-image image-lilac"><img src="assets/images/MPT.png" alt="Portfolio optimization visual" loading="lazy" /></div><div class="project-info"><span class="mono">FINANCE · 2024</span><h3>Modern portfolio optimization</h3><p>Maximising the Sharpe ratio for a small Sri Lankan equity portfolio.</p><a href="assets/documents/Modern_Portfolio_Optimization_SriLanka.pdf" target="_blank" class="project-link">Read report ↗</a></div></article></div></section>
 
-    <section id="notes" class="notes-section"><div class="shell"><div class="section-heading"><div><span class="kicker">03 / From the notebook</span><h2>Research, in <i>progress.</i></h2></div><p>Questions I&apos;m currently exploring.</p></div><div class="notes-list"><a href="assets/documents/CSE_Portfolio_Risk_Analysis_MHMN_Perera.pdf" target="_blank"><span>01</span><div><small>RESEARCH NOTE · 06 MIN READ</small><h3>What does a “good” investment really mean?</h3></div><b>↗</b></a><a href="assets/documents/socialresearch1.pdf" target="_blank"><span>02</span><div><small>SOCIAL RESEARCH · 08 MIN READ</small><h3>Finding the human story inside the data.</h3></div><b>↗</b></a></div></div></section>
+    <section class="thinking-section section-shell" id="thinking"><div class="thinking-card reveal"><div><p class="eyebrow">Notes from the desk</p><h2>Thinking out<br /><em>loud.</em></h2></div><div class="note-list"><a href="blog.html"><span class="mono">01 · NOTE</span><strong>Why good analysis starts with a better question</strong><span>↗</span></a><a href="assets/documents/Modern_Portfolio_Optimization_SriLanka.pdf" target="_blank"><span class="mono">02 · REPORT</span><strong>Building a portfolio with less guesswork</strong><span>↗</span></a><a href="assets/documents/CV_mahinsa_nethmina.pdf" download><span class="mono">03 · PROFILE</span><strong>Curriculum vitae — 2024 edition</strong><span>↓</span></a></div></div></section>
 
-    <section id="contact" class="contact-section"><div class="shell contact-layout"><div><span class="kicker">04 / Start a conversation</span><h2>Have a good<br /><i>question?</i></h2></div><div class="contact-right"><p>Whether you have a project in mind, a question about my work, or just want to say hello — my inbox is open.</p><a class="email-link" href="mailto:mahinsaperera@gmail.com">mahinsaperera@gmail.com <span>↗</span></a><div class="social-links"><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a><a href="https://github.com/mahinsa-mhmnp" target="_blank" rel="noreferrer">GitHub</a><a href="assets/documents/myresume.pdf" download>Résumé</a></div></div></div></section>
+    <section class="contact-section section-shell" id="contact"><div class="contact-copy reveal"><p class="eyebrow">Let’s connect</p><h2>Have a question,<br />idea, or <em>challenge?</em></h2><a class="email-link" href="mailto:mahinsanethmina@gmail.com">mahinsanethmina@gmail.com <span>↗</span></a></div><div class="contact-side reveal delay-1"><p>Whether you’re looking for an analytical mind, want to talk research, or simply want to say hello — my inbox is open.</p><div class="socials"><a href="https://github.com/MHMNP2021" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/mahinsa-nethmina/" target="_blank" rel="noopener">LinkedIn ↗</a></div></div></section>
   </main>
-  <footer class="footer shell"><span>© M Nethmina Perera</span><span>Designed &amp; built with intention.</span><a href="#top">Back to top ↑</a></footer>
+  <footer><span>© 2024 M Nethmina Perera</span><span class="mono">BUILT WITH CURIOSITY</span><a href="#top">Back to top ↑</a></footer>
   <script src="script.js"></script>
 </body>
 </html>

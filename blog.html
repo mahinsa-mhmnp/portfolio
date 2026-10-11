@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog | M Nethmina Perera</title>
+  <meta name="description" content="Insights and tutorials on data science, financial analysis, economics, and more by M. Nethmina Perera.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4d7bf3">
+  <style>
+    .blog-hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(77,123,243,.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(108,99,255,.06) 0%, transparent 40%);
+    }
+    .blog-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .blog-hero p { color: var(--text-secondary); max-width: 600px; margin: 0 auto 32px; font-size: 1.05rem; }
+    .search-wrap { max-width: 480px; margin: 0 auto; position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 14px 20px 14px 48px;
+      border-radius: 50px; border: 1px solid var(--glass-border);
+      background: var(--glass); color: var(--text);
+      font-size: .92rem; transition: all .3s; backdrop-filter: blur(8px);
+    }
+    .search-wrap input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(77,123,243,.12); }
+    .search-wrap i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .blog-main { padding: 60px 0 80px; }
+    .blog-filter { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .blog-posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .blog-post-card {
+      background: var(--bg-card); border: 1px solid var(--glass-border);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); transition: all .4s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column; height: 100%; backdrop-filter: blur(4px);
+    }
+    .blog-post-card:hover {
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: var(--shadow), 0 0 30px rgba(77,123,243,.1);
+      border-color: rgba(77,123,243,.2);
+    }
+    .post-img { height: 200px; overflow: hidden; position: relative; }
+    .post-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, var(--bg-card));
+    }
+    .post-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
+    .blog-post-card:hover .post-img img { transform: scale(1.08); }
+    .post-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+    .post-date { color: var(--text-muted); font-size: .84rem; margin-bottom: 8px; }
+    .post-date i { margin-right: 4px; }
+    .post-body h2 { font-size: 1.15rem; margin-bottom: 10px; line-height: 1.4; }
+    .post-body h2 a:hover { color: var(--primary); }
+    .post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .post-tags .tag {
+      padding: 4px 12px; border-radius: 50px;
+      background: rgba(77,123,243,.08); border: 1px solid rgba(77,123,243,.15);
+      color: var(--primary-light); font-size: .76rem; font-weight: 500; transition: all .3s;
+    }
+    .post-tags .tag:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .post-body p { color: var(--text-secondary); font-size: .88rem; margin-bottom: 16px; flex-grow: 1; line-height: 1.7; }
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 48px; }
+    .page-link {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--glass); border: 1px solid var(--glass-border);
+      color: var(--text); font-weight: 500; font-size: .9rem;
+      transition: all .3s;
+    }
+    .page-link.active, .page-link:hover {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(77,123,243,.3);
+    }
+    .newsletter {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px); border-radius: var(--radius-lg);
+      padding: 60px 32px; text-align: center; margin: 60px 0;
+    }
+    .newsletter h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3vw, 1.8rem); margin-bottom: 12px; }
+    .newsletter p { color: var(--text-secondary); margin-bottom: 24px; }
+    .newsletter-form { display: flex; max-width: 460px; margin: 0 auto; gap: 12px; }
+    .newsletter-form input {
+      flex: 1; padding: 14px 20px; border-radius: 50px;
+      border: 1px solid var(--glass-border); background: rgba(255,255,255,.03);
+      color: var(--text); font-size: .92rem; transition: all .3s;
+    }
+    .newsletter-form input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(77,123,243,.12); }
+    .light-theme .newsletter-form input { background: rgba(255,255,255,.7); }
+    @media (max-width: 600px) {
+      .newsletter-form { flex-direction: column; }
+      .blog-posts-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <header id="header">
+    <nav>
+      <div class="logo">MHMN<span>Perera</span></div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="blog-hero">
+      <h1>Insights & Knowledge</h1>
+      <p>Thoughts, tutorials, and deep dives into data science, financial analysis, economics, and more.</p>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchBar" placeholder="Search articles...">
+      </div>
+    </section>
+
+    <section class="blog-main">
+      <div class="container">
+        <div class="blog-filter">
+          <button class="filter-btn active" data-filter="all">All Posts</button>
+          <button class="filter-btn" data-filter="economic">Economics</button>
+          <button class="filter-btn" data-filter="data-science">Data Science</button>
+          <button class="filter-btn" data-filter="statistics">Statistics</button>
+          <button class="filter-btn" data-filter="finance">Finance</button>
+          <button class="filter-btn" data-filter="trading">Trading</button>
+          <button class="filter-btn" data-filter="business">Business</button>
+          <button class="filter-btn" data-filter="management">Management</button>
+        </div>
+
+        <div class="blog-posts-grid" id="blogPosts">
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=800&q=80" alt="Recession Proofing" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> August 10, 2026</div>
+              <h2><a href="blog/recession-proofing-strategies.html">Recession Proofing</a></h2>
+              <div class="post-tags">
+                <span class="tag">recession</span><span class="tag">financial-planning</span><span class="tag">risk-management</span>
+              </div>
+              <p>Learn how to protect your investments and assets from recession. Discover the best strategies for recession proofing in today's market.</p>
+              <a href="blog/recession-proofing-strategies.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Sustainable Finance" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> August 03, 2026</div>
+              <h2><a href="blog/sustainable-finance-trends.html">Sustainable Finance</a></h2>
+              <div class="post-tags">
+                <span class="tag">sustainable investing</span><span class="tag">green finance</span><span class="tag">climate risk</span>
+              </div>
+              <p>Sustainable finance is on the rise, driven by growing concerns about climate change and social responsibility. Investors are increasingly seeking environmentally friendly investment opportunities.</p>
+              <a href="blog/sustainable-finance-trends.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80" alt="Actuarial Models" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> July 27, 2026</div>
+              <h2><a href="blog/actuarial-models-in-financial-risk.html">Actuarial Models</a></h2>
+              <div class="post-tags">
+                <span class="tag">risk-management</span><span class="tag">financial-models</span><span class="tag">actuarial-science</span>
+              </div>
+              <p>Actuarial models play a crucial role in financial risk management, helping organizations navigate complex risks. Recent advancements in data analytics have improved model accuracy.</p>
+              <a href="blog/actuarial-models-in-financial-risk.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Digital Currencies" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> July 20, 2026</div>
+              <h2><a href="blog/digital-currencies-and-central-banks.html">Digital Currencies</a></h2>
+              <div class="post-tags">
+                <span class="tag">central-banks</span><span class="tag">digital-currencies</span><span class="tag">currency</span>
+              </div>
+              <p>Central banks are exploring digital currencies to improve financial systems. This shift is driven by current market conditions and technological advancements.</p>
+              <a href="blog/digital-currencies-and-central-banks.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Pension Funding" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> July 13, 2026</div>
+              <h2><a href="blog/pension-funding-challenges.html">Pension Funding</a></h2>
+              <div class="post-tags">
+                <span class="tag">pension funds</span><span class="tag">actuarial science</span><span class="tag">retirement planning</span>
+              </div>
+              <p>Pension funding challenges persist amidst current market conditions. Actuaries play a crucial role in ensuring the long-term sustainability of these funds.</p>
+              <a href="blog/pension-funding-challenges.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="InsurTech Boom" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> July 06, 2026</div>
+              <h2><a href="blog/insurtech-boom.html">InsurTech Boom</a></h2>
+              <div class="post-tags">
+                <span class="tag">insurance</span><span class="tag">technology</span><span class="tag">innovation</span>
+              </div>
+              <p>The InsurTech industry is experiencing rapid growth, driven by advancements in technology and changing consumer behaviors. This boom is transforming the insurance landscape, creating new opportunities and challenges for actuaries and insurers.</p>
+              <a href="blog/insurtech-boom.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="ESG Investing" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> June 29, 2026</div>
+              <h2><a href="blog/esg-investing-trends.html">ESG Investing</a></h2>
+              <div class="post-tags">
+                <span class="tag">sustainable investing</span><span class="tag">esg</span><span class="tag">responsible investing</span>
+              </div>
+              <p>ESG investing continues to gain momentum, with investors increasingly considering environmental, social, and governance factors in their investment decisions. This trend is driven by growing concerns about climate change and social responsibility.</p>
+              <a href="blog/esg-investing-trends.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+
+          <article class="blog-post-card" data-tags="all finance finance finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Market Volatility" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> June 29, 2026</div>
+              <h2><a href="blog/market-volatility.html">Market Volatility</a></h2>
+              <div class="post-tags">
+                <span class="tag">market-trends</span><span class="tag">investment</span><span class="tag">risk</span>
+              </div>
+              <p>Current market conditions are experiencing high volatility, impacting investment portfolios. Understanding risk management strategies is crucial for investors.</p>
+              <a href="blog/market-volatility.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all business management psychology">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Types of Disagreement" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> January 27, 2025</div>
+              <h2><a href="blog/disagreement-types.html">Types of Disagreement in Corporate Sector and Society</a></h2>
+              <div class="post-tags">
+                <span class="tag">Business</span>
+                <span class="tag">Management</span>
+                <span class="tag">Psychology</span>
+              </div>
+              <p>Explore the five primary types of disagreements in corporate environments and society: emotionally driven, fact-based, bias-based, communication-related, and fear-based conflicts.</p>
+              <a href="blog/disagreement-types.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all finance business">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80" alt="Business Communication" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> May 20, 2025</div>
+              <h2><a href="blog/business-communication-finance.html">Mastering Business Communication in Finance</a></h2>
+              <div class="post-tags">
+                <span class="tag">Finance</span>
+                <span class="tag">Communication</span>
+                <span class="tag">Business</span>
+              </div>
+              <p>Learn how effective communication can be your competitive edge in finance. Discover strategies for client communication, data visualization, and financial storytelling.</p>
+              <a href="blog/business-communication-finance.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all economic finance trading">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80" alt="Forex Market" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> April 21, 2025</div>
+              <h2><a href="blog/forex-market.html">Forex Market: A Comprehensive Overview</a></h2>
+              <div class="post-tags">
+                <span class="tag">Finance</span>
+                <span class="tag">Trading</span>
+                <span class="tag">Global Markets</span>
+              </div>
+              <p>Explore the world's largest financial market with daily trading volumes exceeding $6.6 trillion. Learn about currency pairs, market participants, and global impact.</p>
+              <a href="blog/forex-market.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all data-science statistics">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Data Analysis" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> March 27, 2025</div>
+              <h2><a href="blog/multiple-linear-regression.html">Multiple Linear Regression: Implementation in R and Python</a></h2>
+              <div class="post-tags">
+                <span class="tag">Data Science</span>
+                <span class="tag">Statistics</span>
+              </div>
+              <p>Learn how to implement multiple linear regression models in both R and Python, and understand the key differences between these two approaches for predictive modeling.</p>
+              <a href="blog/multiple-linear-regression.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all economic finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80" alt="Capital Market" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> March 29, 2025</div>
+              <h2><a href="blog/capital-market.html">Capital Market: A Comprehensive Overview</a></h2>
+              <div class="post-tags">
+                <span class="tag">Economics</span>
+                <span class="tag">Finance</span>
+              </div>
+              <p>Explore the structure, functions, and importance of capital markets in the global economy, with a focus on the Sri Lankan capital market landscape.</p>
+              <a href="blog/capital-market.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="blog-post-card" data-tags="all economic finance">
+            <div class="post-img">
+              <img src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=800&q=80" alt="Money Market" loading="lazy">
+            </div>
+            <div class="post-body">
+              <div class="post-date"><i class="far fa-calendar-alt"></i> March 31, 2025</div>
+              <h2><a href="blog/money-market.html">Money Market: A Comprehensive Overview</a></h2>
+              <div class="post-tags">
+                <span class="tag">Economics</span>
+                <span class="tag">Finance</span>
+              </div>
+              <p>Discover the essential components, functions, and significance of money markets in the financial system, including a look at Sri Lanka's money market.</p>
+              <a href="blog/money-market.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+
+        <div class="newsletter fade-up">
+          <h2>Subscribe to My Newsletter</h2>
+          <p>Stay updated with my latest articles, tutorials, and insights delivered directly to your inbox.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="Your email address" required>
+            <button type="submit" class="btn primary-btn" style="white-space:nowrap;">
+              <i class="fas fa-paper-plane"></i> Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>About Me</h3>
+          <p style="color:var(--text-secondary);font-size:.88rem;line-height:1.7;">
+            I'm a data scientist and financial analyst passionate about exploring the intersection of data, economics, and technology.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="index.html#about"><i class="fas fa-chevron-right"></i> About</a></li>
+            <li><a href="index.html#projects"><i class="fas fa-chevron-right"></i> Projects</a></li>
+            <li><a href="index.html#skills"><i class="fas fa-chevron-right"></i> Skills</a></li>
+            <li><a href="blog.html"><i class="fas fa-chevron-right"></i> Blog</a></li>
+            <li><a href="index.html#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Latest Posts</h3>
+          <ul>
+            <li><a href="blog/disagreement-types.html"><i class="fas fa-chevron-right"></i> Types of Disagreement</a></li>
+            <li><a href="blog/forex-market.html"><i class="fas fa-chevron-right"></i> Forex Market Overview</a></li>
+            <li><a href="blog/money-market.html"><i class="fas fa-chevron-right"></i> Money Market Overview</a></li>
+            <li><a href="blog/capital-market.html"><i class="fas fa-chevron-right"></i> Capital Market Overview</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 M Nethmina Perera. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-sun"></i>
+  </div>
+
+  <a href="#" class="back-to-top" id="backToTop" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const POSTS_PER_PAGE = 6;
+      const posts = document.querySelectorAll('.blog-post-card');
+      const pagination = document.getElementById('pagination');
+      const filterBtns = document.querySelectorAll('.blog-filter .filter-btn');
+      const searchBar = document.getElementById('searchBar');
+
+      let currentFilter = 'all';
+      let currentPage = 1;
+
+      function getVisiblePosts() {
+        const term = searchBar ? searchBar.value.toLowerCase() : '';
+        return Array.from(posts).filter(post => {
+          const tags = post.dataset.tags.split(' ');
+          if (currentFilter !== 'all' && !tags.includes(currentFilter)) return false;
+          if (term) {
+            const title = post.querySelector('h2').textContent.toLowerCase();
+            const content = post.querySelector('p').textContent.toLowerCase();
+            const allTags = post.dataset.tags.toLowerCase();
+            if (!title.includes(term) && !content.includes(term) && !allTags.includes(term)) return false;
+          }
+          return true;
+        });
+      }
+
+      function renderPage() {
+        const visible = getVisiblePosts();
+        const totalPages = Math.max(1, Math.ceil(visible.length / POSTS_PER_PAGE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        posts.forEach(p => { p.style.display = 'none'; p.style.opacity = '0'; });
+
+        const start = (currentPage - 1) * POSTS_PER_PAGE;
+        const pagePosts = visible.slice(start, start + POSTS_PER_PAGE);
+        pagePosts.forEach((p, i) => {
+          p.style.display = 'flex';
+          requestAnimationFrame(() => {
+            p.style.opacity = '1';
+            p.style.transform = 'translateY(0)';
+          });
+        });
+
+        renderPagination(totalPages);
+      }
+
+      function renderPagination(totalPages) {
+        if (!pagination) return;
+        pagination.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        const prev = document.createElement('a');
+        prev.href = '#';
+        prev.className = 'page-link';
+        prev.innerHTML = '<i class="fas fa-angle-left"></i>';
+        prev.addEventListener('click', e => { e.preventDefault(); if (currentPage > 1) { currentPage--; renderPage(); } });
+        pagination.appendChild(prev);
+
+        for (let i = 1; i <= totalPages; i++) {
+          const link = document.createElement('a');
+          link.href = '#';
+          link.className = 'page-link' + (i === currentPage ? ' active' : '');
+          link.textContent = i;
+          link.addEventListener('click', e => { e.preventDefault(); currentPage = i; renderPage(); });
+          pagination.appendChild(link);
+        }
+
+        const next = document.createElement('a');
+        next.href = '#';
+        next.className = 'page-link';
+        next.innerHTML = '<i class="fas fa-angle-right"></i>';
+        next.addEventListener('click', e => { e.preventDefault(); if (currentPage < totalPages) { currentPage++; renderPage(); } });
+        pagination.appendChild(next);
+      }
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          currentPage = 1;
+          renderPage();
+        });
+      });
+
+      if (searchBar) {
+        searchBar.addEventListener('keyup', () => { currentPage = 1; renderPage(); });
+      }
+
+      const nlForm = document.getElementById('newsletterForm');
+      if (nlForm) {
+        nlForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const input = nlForm.querySelector('input');
+          if (input.value.trim()) {
+            alert('Thanks for subscribing!');
+            input.value = '';
+          }
+        });
+      }
+
+      renderPage();
+    });
+  </script>
+</body>
+</html>

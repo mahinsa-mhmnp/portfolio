@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Life Journey | M Nethmina Perera</title>
+    <link rel="stylesheet" href="../style.css">
+    <meta name="description" content="An interactive timeline showcasing the key milestones and chapters of my life journey">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-color-light: #6780fa;
+            --secondary-color: #7209b7;
+            --accent-color: #3a0ca3;
+            --success-color: #4CAF50;
+            --info-color: #2196F3;
+            --warning-color: #FF9800;
+            --purple-color: #9C27B0;
+            --danger-color: #F44336;
+            --text-color: #333;
+            --text-secondary: #666;
+            --card-bg: #f8f9fa;
+            --card-bg-light: #ffffff;
+            --background-color: #fff;
+            --timeline-width: 6px;
+            --dot-size: 30px;
+            --transition-speed: 0.3s;
+        }
+        
+        .dark {
+            --text-color: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --card-bg: #1e1e2d;
+            --card-bg-light: #2a2a3a;
+            --card-bg-dark: #1e1e2d;
+            --background-color: #121212;
+            --background-color-dark: #121212;
+        }
+        
+        /* Timeline Container */
+        .timeline-container {
+            position: relative;
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 20px 0;
+            overflow: hidden;
+        }
+        
+        /* Timeline Phases Navigation */
+        .timeline-phases {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .timeline-phase {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg-light) 100%);
+            border-radius: 12px;
+            margin: 0 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed) ease;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-phase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%);
+            transform: translateY(100%);
+            transition: transform var(--transition-speed) ease;
+            z-index: -1;
+        }
+        
+        .timeline-phase:hover::before {
+            transform: translateY(0);
+        }
+        
+        .timeline-phase.active {
+            border-bottom: 3px solid var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-phase:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .timeline-phase h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .timeline-phase h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width var(--transition-speed) ease;
+        }
+        
+        .timeline-phase:hover h3::after,
+        .timeline-phase.active h3::after {
+            width: 100%;
+        }
+        
+        .timeline-phase span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 5px;
+            transition: color var(--transition-speed) ease;
+        }
+        
+        .timeline-phase:hover span,
+        .timeline-phase.active span {
+            color: var(--primary-color);
+        }
+        
+        /* Main Timeline */
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: var(--timeline-width);
+            background: linear-gradient(to bottom, 
+                var(--primary-color) 0%, 
+                var(--accent-color) 50%, 
+                var(--secondary-color) 100%);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: calc(var(--timeline-width) / -2);
+            border-radius: 6px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        /* Timeline Items */
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2;
+        }
+        
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Timeline Dots */
+        .timeline-dot {
+            position: absolute;
+            width: var(--dot-size);
+            height: var(--dot-size);
+            right: -15px;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 3;
+            background: var(--background-color);
+            border: 5px solid var(--primary-color);
+            box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.2);
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+        }
+        
+        .timeline-dot:hover::before,
+        .timeline-dot.active::before {
+            opacity: 1;
+        }
+        
+        .timeline-dot:hover, 
+        .timeline-dot.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 8px rgba(67, 97, 238, 0.2);
+        }
+        
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .timeline-dot.active::after {
+            transform: scale(1.5);
+            opacity: 0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .timeline-item.education .timeline-dot {
+            border-color: var(--success-color);
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .timeline-item.career .timeline-dot {
+            border-color: var(--info-color);
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+        
+        .timeline-item.personal .timeline-dot {
+            border-color: var(--warning-color);
+            background-color: rgba(255, 152, 0, 0.1);
+        }
+        
+        .timeline-item.achievement .timeline-dot {
+            border-color: var(--purple-color);
+            background-color: rgba(156, 39, 176, 0.1);
+        }
+        
+        /* Timeline Icon */
+        .timeline-icon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            right: -12px;
+            top: 18px;
+            z-index: 4;
+            color: var(--background-color);
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .timeline-dot:hover + .timeline-icon,
+        .timeline-dot.active + .timeline-icon {
+            transform: scale(1.2);
+        }
+        
+        .right .timeline-icon {
+            left: -12px;
+        }
+        
+        /* Left and Right Positioning */
+        .left {
+            left: 0;
+            text-align: right;
+        }
+        
+        .right {
+            left: 50%;
+            text-align: left;
+        }
+        
+        .left .timeline-dot {
+            right: -15px;
+        }
+        
+        .right .timeline-dot {
+            left: -15px;
+        }
+        
+        .left .timeline-icon {
+            right: -12px;
+        }
+        
+        /* Timeline Date */
+        .timeline-date {
+            display: inline-block;
+            padding: 8px 18px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
+            color: white;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all var(--transition-speed) ease;
+            transform: translateY(0);
+        }
+        
+        .timeline-item:hover .timeline-date {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-date::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        
+        .left .timeline-date::after {
+            border-width: 8px 0 8px 8px;
+            border-color: transparent transparent transparent var(--primary-color);
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .right .timeline-date::after {
+            border-width: 8px 8px 8px 0;
+            border-color: transparent var(--primary-color) transparent transparent;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .timeline-item.education .timeline-date {
+            background: linear-gradient(135deg, var(--success-color) 0%, #8BC34A 100%);
+        }
+        
+        .timeline-item.career .timeline-date {
+            background: linear-gradient(135deg, var(--info-color) 0%, #03A9F4 100%);
+        }
+        
+        .timeline-item.personal .timeline-date {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #FFC107 100%);
+        }
+        
+        .timeline-item.achievement .timeline-date {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #E040FB 100%);
+        }
+        
+        .timeline-item.education .timeline-date::after {
+            border-color: transparent transparent transparent var(--success-color);
+        }
+        
+        .timeline-item.career .timeline-date::after {
+            border-color: transparent transparent transparent var(--info-color);
+        }
+        
+        .timeline-item.personal .timeline-date::after {
+            border-color: transparent transparent transparent var(--warning-color);
+        }
+        
+        .timeline-item.achievement .timeline-date::after {
+            border-color: transparent transparent transparent var(--purple-color);
+        }
+        
+        .right.timeline-item.education .timeline-date::after {
+            border-color: transparent var(--success-color) transparent transparent;
+        }
+        
+        .right.timeline-item.career .timeline-date::after {
+            border-color: transparent var(--info-color) transparent transparent;
+        }
+        
+        .right.timeline-item.personal .timeline-date::after {
+            border-color: transparent var(--warning-color) transparent transparent;
+        }
+        
+        .right.timeline-item.achievement .timeline-date::after {
+            border-color: transparent var(--purple-color) transparent transparent;
+        }
+        
+        /* Timeline Content */
+        .timeline-content {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            min-height: 250px;
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--card-bg);
+            opacity: 0;
+            transform: translateY(20px);
+            z-index: 5;
+        }
+        
+        .timeline-content.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            z-index: 1;
+        }
+        
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .timeline-content.education::before {
+            background: linear-gradient(90deg, var(--success-color) 0%, #8BC34A 100%);
+        }
+        
+        .timeline-content.career::before {
+            background: linear-gradient(90deg, var(--info-color) 0%, #03A9F4 100%);
+        }
+        
+        .timeline-content.personal::before {
+            background: linear-gradient(90deg, var(--warning-color) 0%, #FFC107 100%);
+        }
+        
+        .timeline-content.achievement::before {
+            background: linear-gradient(90deg, var(--purple-color) 0%, #E040FB 100%);
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-content h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+        
+        .timeline-content h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .timeline-content.education h3::after {
+            background: var(--success-color);
+        }
+        
+        .timeline-content.career h3::after {
+            background: var(--info-color);
+        }
+        
+        .timeline-content.personal h3::after {
+            background: var(--warning-color);
+        }
+        
+        .timeline-content.achievement h3::after {
+            background: var(--purple-color);
+        }
+        
+        .timeline-content p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            text-align: justify;
+            font-size: 1.05rem;
+        }
+        
+        /* Timeline Image */
+        .timeline-image-container {
+            position: relative;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-height: 350px;
+            transform: translateY(0);
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .timeline-content:hover .timeline-image-container {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: all 0.8s ease;
+            transform: scale(1.01);
+        }
+        
+        .timeline-content:hover .timeline-image {
+            transform: scale(1.05);
+        }
+        
+        .timeline-image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            transform: translateY(100%);
+            transition: all var(--transition-speed) ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .timeline-content:hover .timeline-image-caption {
+            transform: translateY(0);
+        }
+        
+        /* Timeline Tags */
+        .timeline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .timeline-tag {
+            padding: 6px 14px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            cursor: default;
+        }
+        
+        .timeline-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline-tag.education {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+        
+        .timeline-tag.career {
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--info-color);
+        }
+        
+        .timeline-tag.personal {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .timeline-tag.achievement {
+            background: rgba(156, 39, 176, 0.1);
+            color: var(--purple-color);
+        }
+        
+        /* Timeline Milestone */
+        .timeline-milestone {
+            position: relative;
+            margin-top: 25px;
+            padding: 18px;
+            background: rgba(58, 12, 163, 0.05);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 12px 12px 0;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .timeline-content:hover .timeline-milestone {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .timeline-milestone h4 {
+            margin: 0 0 8px 0;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+        
+        .timeline-milestone p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .timeline-content.education .timeline-milestone {
+            border-color: var(--success-color);
+            background: rgba(76, 175, 80, 0.05);
+        }
+        
+        .timeline-content.career .timeline-milestone {
+            border-color: var(--info-color);
+            background: rgba(33, 150, 243, 0.05);
+        }
+        
+        .timeline-content.personal .timeline-milestone {
+            border-color: var(--warning-color);
+            background: rgba(255, 152, 0, 0.05);
+        }
+        
+        .timeline-content.achievement .timeline-milestone {
+            border-color: var(--purple-color);
+            background: rgba(156, 39, 176, 0.05);
+        }
+        
+        .timeline-content.education .timeline-milestone h4 {
+            color: var(--success-color);
+        }
+        
+        .timeline-content.career .timeline-milestone h4 {
+            color: var(--info-color);
+        }
+        
+        .timeline-content.personal .timeline-milestone h4 {
+            color: var(--warning-color);
+        }
+        
+        .timeline-content.achievement .timeline-milestone h4 {
+            color: var(--purple-color);
+        }
+        
+        /* Timeline Emotions */
+        .timeline-emotions {
+            display: flex;
+            margin-top: 20px;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .left .timeline-emotions {
+            justify-content: flex-end;
+        }
+        
+        .right .timeline-emotions {
+            justify-content: flex-start;
+        }
+        
+        .emotion-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg-light);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .emotion-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+        }
+        
+        .emotion-icon:hover::before,
+        .emotion-icon.active::before {
+            opacity: 1;
+        }
+        
+        .emotion-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .emotion-icon.active {
+            transform: scale(1.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .emotion-icon.happy {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+        
+        .emotion-icon.challenging {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .emotion-icon.exciting {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        /* Timeline Progress */
+        .timeline-progress {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #f0f0f0;
+            z-index: 10;
+        }
+        
+        .timeline-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            width: 0;
+            transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0) 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        /* Timeline Navigation */
+        .timeline-navigation {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .timeline-nav-btn {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: none;
+            border-radius: 30px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%);
+            transform: translateY(100%);
+            transition: transform var(--transition-speed) ease;
+            z-index: 0;
+        }
+        
+        .timeline-nav-btn:hover::before {
+            transform: translateY(0);
+        }
+        
+        .timeline-nav-btn i {
+            position: relative;
+            z-index: 1;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .timeline-nav-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            color: var(--primary-color);
+        }
+        
+        .timeline-nav-btn:hover i {
+            transform: translateX(-3px);
+        }
+        
+        .timeline-nav-btn:hover i.right-icon {
+            transform: translateX(3px);
+        }
+        
+        .timeline-nav-btn#allBtn:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+        }
+        
+        /* Year label for dots */
+        .year-label {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--text-secondary);
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
+        }
+        
+        .dark .year-label {
+            background: rgba(30, 30, 45, 0.8);
+            color: #aaa;
+        }
+        
+        .timeline-dot:hover .year-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+        
+        /* Topic preview on dot hover */
+        .topic-preview {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(3px);
+        }
+        
+        .timeline-dot:hover .topic-preview {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Animation for content reveal */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .timeline-content.active {
+            animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        /* 3D Tilt Effect */
+        .timeline-content {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .tilt-effect {
+            transition: transform 0.1s ease;
+            transform: rotateX(0) rotateY(0);
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+        
+        .scroll-indicator.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .scroll-indicator:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Confetti animation for achievements */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            opacity: 0;
+            z-index: -1;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Timeline */
+        @media screen and (max-width: 992px) {
+            .timeline-phases {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .timeline-phase {
+                flex: 1 1 calc(50% - 20px);
+                margin-bottom: 10px;
+                min-width: 120px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+                text-align: left;
+            }
+            
+            .timeline-item .timeline-dot {
+                left: 15px;
+                right: auto;
+                top: 15px;
+            }
+            
+            .timeline-icon {
+                left: 17px !important;
+                right: auto !important;
+            }
+            
+            .left, .right {
+                left: 0;
+            }
+            
+            .timeline-date {
+                display: inline-block;
+            }
+            
+            .left .timeline-date::after,
+            .right .timeline-date::after {
+                display: none;
+            }
+            
+            .timeline-emotions {
+                justify-content: flex-start !important;
+            }
+            
+            .timeline-phase {
+                flex: 1 1 100%;
+            }
+            
+            .timeline-content h3::after {
+                left: 0;
+                transform: none;
+            }
+            
+            .timeline-content {
+                padding: 20px;
+            }
+            
+            .timeline-content h3 {
+                font-size: 1.5rem;
+                text-align: left;
+            }
+            
+            .timeline-content h3::after {
+                left: 0;
+                transform: none;
+            }
+        }
+        
+        /* Dark mode adjustments */
+        .dark .timeline-content {
+            background: var(--card-bg-dark, #1e1e2d);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dark .timeline-phase {
+            background: linear-gradient(135deg, var(--card-bg-dark, #1e1e2d) 0%, rgba(40, 40, 60, 1) 100%);
+        }
+        
+        .dark .timeline-dot {
+            background: var(--background-color-dark, #121212);
+        }
+        
+        .dark .emotion-icon {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .dark .timeline-progress {
+            background: #2a2a3a;
+        }
+        
+        .dark .timeline-nav-btn {
+            background: var(--card-bg-dark, #1e1e2d);
+            color: var(--text-color-dark, #e0e0e0);
+        }
+        
+        /* Loading animation */
+        .timeline-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(67, 97, 238, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s infinite linear;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        
+        .timeline-loader.active {
+            display: block;
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .tooltip.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#skills">Skills</a></li>
+                <li><a href="../index.html#experience">Experience</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article class="blog-post-single">
+            <div class="container">
+                <div class="post-header">
+                    <div class="post-meta">
+                        <span class="post-date">March 21, 2025</span>
+                        <div class="post-tags">
+                            <span class="tag">personal</span>
+                            <span class="tag">journey</span>
+                            <span class="tag">milestones</span>
+                        </div>
+                    </div>
+                    <h1>The Chapters of My Life: An Interactive Journey</h1>
+                </div>
+                
+                <div class="post-featured-image">
+                    <img src="../assets/images/timeline2.webp" alt="Life Journey Timeline">
+                </div>
+                
+                <div class="post-content">
+                    <p>Every life is a unique story with its own chapters, characters, and plot twists. This interactive timeline captures the key moments that have shaped my journey from birth to the present day. Explore the different phases of my life and discover the experiences that have molded me into who I am today.</p>
+                    
+                    <div class="timeline-container">
+                        <div class="timeline-progress">
+                            <div class="timeline-progress-bar" id="timelineProgress"></div>
+                        </div>
+                        
+                        <div class="timeline-phases">
+                            <div class="timeline-phase active" data-phase="early-years">
+                                <h3>Early Years</h3>
+                                <span>2000-2011</span>
+                            </div>
+                            <div class="timeline-phase" data-phase="education">
+                                <h3>Education</h3>
+                                <span>2011-2019</span>
+                            </div>
+                            <div class="timeline-phase" data-phase="advancededucation">
+                                <h3>Advanced Education</h3>
+                                <span>2019-Present</span>
+                            </div>
+                            <div class="timeline-phase" data-phase="personal">
+                                <h3>Personal Growth</h3>
+                                <span>Ongoing</span>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-loader" id="timelineLoader"></div>
+                        
+                        <div class="timeline">
+                            <!-- Present Day -->
+                            <div class="timeline-item left personal" data-phase="personal">
+                                <div class="timeline-dot" data-year="2025" data-topic="Present Day">
+                                    <span class="year-label">2025</span>
+                                    <span class="topic-preview">Present Day</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                </div>
+                                <div class="timeline-date">2025</div>
+                                <div class="timeline-content personal tilt-effect" id="content-2025">
+                                    <h3>Present Day</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/present-day.jpg" alt="Present Day" class="timeline-image">
+                                        <div class="timeline-image-caption">Where I am today</div>
+                                    </div>
+                                    <p>Currently working as [Current Position] at [Current Company], continuing to grow professionally while pursuing my passion for [Your Passion]. I'm excited about the future chapters of my life story and the new experiences that await.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Current Chapter</h4>
+                                        <p>The present moment – building on past experiences while looking forward to future opportunities.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag personal">Present</span>
+                                        <span class="timeline-tag career">Professional</span>
+                                        <span class="timeline-tag personal">Growth</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Professional Growth -->
+                            <div class="timeline-item right career" data-phase="career">
+                                <div class="timeline-dot" data-year="2024" data-topic="Professional Growth">
+                                    <span class="year-label">2024</span>
+                                    <span class="topic-preview">Professional Growth</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content career tilt-effect" id="content-2024">
+                                    <h3>Professional Growth</h3>
+                                    <p>Expanded my skill set by learning [New Skill/Technology], opening new opportunities in my career path. This continuous learning approach has helped me stay current in my field and take on more challenging responsibilities.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag career">Professional Development</span>
+                                        <span class="timeline-tag career">Skills</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Portfolio Website -->
+                            <div class="timeline-item left personal" data-phase="personal">
+                                <div class="timeline-dot" data-year="2023" data-topic="Portfolio Website">
+                                    <span class="year-label">2023</span>
+                                    <span class="topic-preview">Portfolio Website</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-laptop-code"></i>
+                                </div>
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content personal tilt-effect" id="content-2023">
+                                    <h3>Portfolio Website Launch</h3>
+                                    <p>Created and launched my personal portfolio website to showcase my projects and professional journey. This platform serves as a digital representation of my skills, experiences, and achievements.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag personal">Personal Project</span>
+                                        <span class="timeline-tag career">Professional Development</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Job -->
+                            <div class="timeline-item right career" data-phase="career">
+                                <div class="timeline-dot" data-year="2022" data-topic="Career Launch">
+                                    <span class="year-label">2022</span>
+                                    <span class="topic-preview">Career Launch</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                </div>
+                                <div class="timeline-date">2022</div>
+                                <div class="timeline-content career tilt-effect" id="content-2022">
+                                    <h3>Career Launch</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/first-job.jpg" alt="First Job" class="timeline-image">
+                                        <div class="timeline-image-caption">Beginning my professional career</div>
+                                    </div>
+                                    <p>Started my professional career as a [Your Position] at [Company Name], applying my skills in a real-world setting. This role allowed me to build on my academic foundation and develop practical expertise in my field.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Career Milestone</h4>
+                                        <p>First full-time professional position, marking the beginning of my career journey.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag career">Career</span>
+                                        <span class="timeline-tag career">Professional</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <div class="emotion-icon challenging" title="Challenging">
+                                            <i class="fa-solid fa-mountain"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- University Graduation -->
+                            <div class="timeline-item left achievement" data-phase="education">
+                                <div class="timeline-dot" data-year="2021" data-topic="University Graduation">
+                                    <span class="year-label">2021</span>
+                                    <span class="topic-preview">University Graduation</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content achievement tilt-effect" id="content-2021">
+                                    <h3>University Graduation</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/university-graduation.jpg" alt="University Graduation" class="timeline-image">
+                                        <div class="timeline-image-caption">Graduating from the University of Ruhuna</div>
+                                    </div>
+                                    <p>Graduated from the University of Ruhuna with a degree in [Your Degree], ready to make my mark in the professional world. This achievement represented the culmination of years of dedicated study and preparation.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Academic Achievement</h4>
+                                        <p>Successfully completed my university education, earning my degree and preparing for professional life.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag achievement">Graduation</span>
+                                        <span class="timeline-tag education">University</span>
+                                        <span class="timeline-tag education">Degree</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Internship -->
+                            <div class="timeline-item right career" data-phase="education">
+                                <div class="timeline-dot" data-year="2020" data-topic="First Professional Experience">
+                                    <span class="year-label">2020</span>
+                                    <span class="topic-preview">First Professional Experience</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                </div>
+                                <div class="timeline-date">2020</div>
+                                <div class="timeline-content career tilt-effect" id="content-2020">
+                                    <h3>First Professional Experience</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/internship.jpg" alt="Internship" class="timeline-image">
+                                        <div class="timeline-image-caption">My first professional experience in the industry</div>
+                                    </div>
+                                    <p>Completed my first internship at [Company Name], gaining valuable industry experience in [Field]. This opportunity provided practical insights into the professional world and helped me understand how my academic knowledge applies in real-world settings.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Professional Milestone</h4>
+                                        <p>First exposure to the professional environment and industry practices.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag career">Internship</span>
+                                        <span class="timeline-tag career">Professional</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <div class="emotion-icon challenging" title="Challenging">
+                                            <i class="fa-solid fa-mountain"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Research Project -->
+                            <div class="timeline-item left achievement" data-phase="education">
+                                <div class="timeline-dot" data-year="2019" data-topic="First Research Project">
+                                    <span class="year-label">2019</span>
+                                    <span class="topic-preview">First Research Project</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-search"></i>
+                                </div>
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content achievement tilt-effect" id="content-2019">
+                                    <h3>First Research Project</h3>
+                                    <p>Conducted my first research on e-banking service quality, which later became a published paper. This project allowed me to apply theoretical knowledge to real-world problems and develop my analytical skills.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag achievement">Research</span>
+                                        <span class="timeline-tag education">Academic</span>
+                                        <span class="timeline-tag education">E-Banking</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <div class="emotion-icon challenging" title="Challenging">
+                                            <i class="fa-solid fa-mountain"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- University Entrance -->
+                            <div class="timeline-item right education" data-phase="education">
+                                <div class="timeline-dot" data-year="2017" data-topic="University of Ruhuna">
+                                    <span class="year-label">2017</span>
+                                    <span class="topic-preview">University of Ruhuna</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-university"></i>
+                                </div>
+                                <div class="timeline-date">2017</div>
+                                <div class="timeline-content education tilt-effect" id="content-2017">
+                                    <h3>University of Ruhuna</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/university.jpg" alt="University of Ruhuna" class="timeline-image">
+                                        <div class="timeline-image-caption">Beginning my journey at the University of Ruhuna</div>
+                                    </div>
+                                    <p>Began my undergraduate studies at the University of Ruhuna, majoring in [Your Major]. This marked the beginning of my specialized education and introduced me to advanced concepts in my field of interest.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Higher Education Milestone</h4>
+                                        <p>Starting my university education and specializing in my chosen field.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag education">University</span>
+                                        <span class="timeline-tag education">Higher Education</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <div class="emotion-icon challenging" title="Challenging">
+                                            <i class="fa-solid fa-mountain"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- High School Graduation -->
+                            <div class="timeline-item left achievement" data-phase="education">
+                                <div class="timeline-dot" data-year="2016" data-topic="High School Graduation">
+                                    <span class="year-label">2016</span>
+                                    <span class="topic-preview">High School Graduation</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-user-graduate"></i>
+                                </div>
+                                <div class="timeline-date">2016</div>
+                                <div class="timeline-content achievement tilt-effect" id="content-2016">
+                                    <h3>High School Graduation</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/graduation-high-school.jpg" alt="High School Graduation" class="timeline-image">
+                                        <div class="timeline-image-caption">Graduating with honors from high school</div>
+                                    </div>
+                                    <p>Graduated from high school with honors, ready to embark on my university journey. This achievement represented the culmination of my secondary education and opened the door to higher learning opportunities.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Academic Milestone</h4>
+                                        <p>Successfully completed secondary education with distinction, preparing for university studies.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag achievement">Graduation</span>
+                                        <span class="timeline-tag education">Education</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Programming Experience -->
+                            <div class="timeline-item right education" data-phase="education">
+                                <div class="timeline-dot" data-year="2013" data-topic="First Line of Code">
+                                    <span class="year-label">2013</span>
+                                    <span class="topic-preview">First Line of Code</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+                                <div class="timeline-date">2013</div>
+                                <div class="timeline-content education tilt-effect" id="content-2013">
+                                    <h3>First Line of Code</h3>
+                                    <p>Wrote my first program in BASIC, marking the beginning of my journey into the world of programming. This moment ignited my passion for coding and problem-solving through technology.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Technical Milestone</h4>
+                                        <p>The moment I discovered my passion for programming and technology.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag education">Programming</span>
+                                        <span class="timeline-tag education">Technology</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Secondary Education -->
+                            <div class="timeline-item left education" data-phase="education">
+                                <div class="timeline-dot" data-year="2010" data-topic="Secondary Education">
+                                    <span class="year-label">2010</span>
+                                    <span class="topic-preview">Secondary Education</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <div class="timeline-date">2010</div>
+                                <div class="timeline-content education tilt-effect" id="content-2010">
+                                    <h3>Secondary Education</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/secondary-school.jpg" alt="Secondary School" class="timeline-image">
+                                        <div class="timeline-image-caption">My secondary school years</div>
+                                    </div>
+                                    <p>Entered secondary education at [School Name], where I developed a deeper interest in science and technology. These formative years exposed me to a broader range of subjects and helped me begin to identify my academic strengths and interests.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag education">Education</span>
+                                        <span class="timeline-tag education">Science</span>
+                                        <span class="timeline-tag education">Technology</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Academic Achievement -->
+                            <div class="timeline-item right achievement" data-phase="early-years">
+                                <div class="timeline-dot" data-year="2008" data-topic="First Academic Achievement">
+                                    <span class="year-label">2008</span>
+                                    <span class="topic-preview">First Academic Achievement</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="timeline-date">2008</div>
+                                <div class="timeline-content achievement tilt-effect" id="content-2008">
+                                    <h3>First Academic Achievement</h3>
+                                    <p>Won my first mathematics competition, sparking my interest in numbers and analytical thinking. This achievement boosted my confidence and revealed my aptitude for quantitative subjects.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag achievement">Achievement</span>
+                                        <span class="timeline-tag education">Mathematics</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Day of School -->
+                            <div class="timeline-item left education" data-phase="early-years">
+                                <div class="timeline-dot" data-year="2003" data-topic="First Day of School">
+                                    <span class="year-label">2003</span>
+                                    <span class="topic-preview">First Day of School</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-school"></i>
+                                </div>
+                                <div class="timeline-date">2003</div>
+                                <div class="timeline-content education tilt-effect" id="content-2003">
+                                    <h3>First Day of School</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/first-day-school.jpg" alt="First Day of School" class="timeline-image">
+                                        <div class="timeline-image-caption">My first day at primary school</div>
+                                    </div>
+                                    <p>Embarked on my educational journey at [School Name], taking my first steps into formal education. This day marked the beginning of my academic path and introduced me to the structured learning environment that would shape much of my childhood.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Educational Milestone</h4>
+                                        <p>First introduction to formal education and the beginning of my academic journey.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag education">Education</span>
+                                        <span class="timeline-tag education">Childhood</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <div class="emotion-icon challenging" title="Challenging">
+                                            <i class="fa-solid fa-mountain"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Steps -->
+                            <div class="timeline-item right personal" data-phase="early-years">
+                                <div class="timeline-dot" data-year="2000" data-topic="First Steps & Words">
+                                    <span class="year-label">2000</span>
+                                    <span class="topic-preview">First Steps & Words</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-shoe-prints"></i>
+                                </div>
+                                <div class="timeline-date">2000</div>
+                                <div class="timeline-content personal tilt-effect" id="content-2000">
+                                    <h3>First Steps & Words</h3>
+                                    <p>Took my first steps and spoke my first words, beginning my journey of exploration and communication. These fundamental milestones set the foundation for all future growth.</p>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag personal">Childhood</span>
+                                        <span class="timeline-tag personal">Development</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Birth -->
+                            <div class="timeline-item left personal" data-phase="early-years">
+                                <div class="timeline-dot" data-year="1998" data-topic="The Beginning of My Story">
+                                    <span class="year-label">1998</span>
+                                    <span class="topic-preview">The Beginning of My Story</span>
+                                </div>
+                                <div class="timeline-icon">
+                                    <i class="fa-solid fa-baby"></i>
+                                </div>
+                                <div class="timeline-date">1998</div>
+                                <div class="timeline-content personal tilt-effect" id="content-1998">
+                                    <h3>The Beginning of My Story</h3>
+                                    <div class="timeline-image-container">
+                                        <img src="../assets/images/birth.jpg" alt="Baby Photo" class="timeline-image">
+                                        <div class="timeline-image-caption">The start of my journey in Colombo, Sri Lanka</div>
+                                    </div>
+                                    <p>Born in Colombo, Sri Lanka, I entered this world ready to begin my unique journey. This moment marked the first chapter of my life story.</p>
+                                    
+                                    <div class="timeline-milestone">
+                                        <h4>Life Milestone</h4>
+                                        <p>The very first day of my existence – the beginning of everything that would follow.</p>
+                                    </div>
+                                    
+                                    <div class="timeline-tags">
+                                        <span class="timeline-tag personal">Beginning</span>
+                                        <span class="timeline-tag personal">Family</span>
+                                    </div>
+                                    
+                                    <div class="timeline-emotions">
+                                        <div class="emotion-icon happy" title="Happy Memory">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </div>
+                                        <div class="emotion-icon exciting" title="Exciting">
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-navigation">
+                            <button class="timeline-nav-btn" id="prevBtn">
+                                <i class="fa-solid fa-arrow-left"></i> <span>Previous</span>
+                            </button>
+                            <button class="timeline-nav-btn" id="allBtn">
+                                <span>View All</span>
+                            </button>
+                            <button class="timeline-nav-btn" id="nextBtn">
+                                <span>Next</span> <i class="fa-solid fa-arrow-right right-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h2>Reflecting on My Journey</h2>
+                    <p>Looking back at these milestones, I'm grateful for every experience that has shaped me into who I am today. Each challenge has been a learning opportunity, and each achievement a stepping stone to greater things.</p>
+                    
+                    <p>This timeline is not just a record of events, but a testament to growth, resilience, and the continuous pursuit of knowledge and excellence. As I move forward, I'm excited to see what new chapters will be added to this life story.</p>
+                </div>
+                
+                <div class="post-navigation">
+                    <div class="prev-post">
+                        <a href="../blog.html">&larr; Back to Blog</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="quick-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                        <li><a href="../index.html#projects">Projects</a></li>
+                        <li><a href="../index.html#skills">Skills</a></li>
+                        <li><a href="../blog.html">Blog</a></li>
+                        <li><a href="../index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="latest-posts">
+                    <h3>Latest Blog Posts</h3>
+                    <ul>
+                        <li><a href="my-life-timeline.html">My Life Journey: A Timeline</a></li>
+                        <li><a href="data-analysis-techniques.html">Advanced Data Analysis Techniques</a></li>
+                        <li><a href="python-for-finance.html">Python for Financial Analysis</a></li>
+                    </ul>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2025 M Nethmina Perera. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator">
+        <i class="fa-solid fa-arrow-up"></i>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Scripts -->
+    <script src="../script.js"></script>
+    <script>
+        // Timeline Interaction JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const timelineDots = document.querySelectorAll('.timeline-dot');
+            const timelineContents = document.querySelectorAll('.timeline-content');
+            const phaseButtons = document.querySelectorAll('.timeline-phase');
+            const progressBar = document.getElementById('timelineProgress');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const allBtn = document.getElementById('allBtn');
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const timelineLoader = document.getElementById('timelineLoader');
+            const tooltip = document.getElementById('tooltip');
+            
+            // Initialize
+            let currentIndex = 0;
+            let activePhase = 'early-years';
+            let activeContent = null;
+            
+            // Show loading animation
+            timelineLoader.classList.add('active');
+            
+            // Show timeline items with animation
+            function showTimelineItems() {
+                // Hide loader
+                setTimeout(() => {
+                    timelineLoader.classList.remove('active');
+                }, 800);
+                
+                timelineItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                    }, 800 + (index * 100));
+                });
+                
+                // Update progress bar
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                }, 1000);
+            }
+            
+            // Filter timeline items by phase
+            function filterByPhase(phase) {
+                // Show loader
+                timelineLoader.classList.add('active');
+                
+                activePhase = phase;
+                
+                // Hide all content
+                timelineContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Reset active dot
+                timelineDots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+                
+                // Update active phase button
+                phaseButtons.forEach(btn => {
+                    if (btn.getAttribute('data-phase') === phase) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Show/hide timeline items with delay for loader
+                setTimeout(() => {
+                    timelineItems.forEach(item => {
+                        if (phase === 'all' || item.getAttribute('data-phase') === phase) {
+                            item.style.display = 'block';
+                            setTimeout(() => {
+                                item.classList.add('visible');
+                            }, 100);
+                        } else {
+                            item.classList.remove('visible');
+                            setTimeout(() => {
+                                item.style.display = 'none';
+                            }, 500);
+                        }
+                    });
+                    
+                    // Hide loader
+                    timelineLoader.classList.remove('active');
+                }, 500);
+                
+                // Reset active content
+                activeContent = null;
+                
+                // Reset progress bar with animation
+                progressBar.style.width = '0';
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                }, 800);
+            }
+            
+            // Navigate through timeline items
+            function navigateTimeline(direction) {
+                const visibleItems = Array.from(timelineItems).filter(item => 
+                    activePhase === 'all' || item.getAttribute('data-phase') === activePhase
+                );
+                
+                if (visibleItems.length === 0) return;
+                
+                // Update current index
+                if (direction === 'next') {
+                    currentIndex = (currentIndex + 1) % visibleItems.length;
+                } else {
+                    currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+                }
+                
+                // Get the dot in the current item
+                const currentDot = visibleItems[currentIndex].querySelector('.timeline-dot');
+                
+                // Simulate click on the dot
+                if (currentDot) {
+                    currentDot.click();
+                }
+                
+                // Update progress bar
+                progressBar.style.width = `${((currentIndex + 1) / visibleItems.length) * 100}%`;
+            }
+            
+            // Toggle content visibility when clicking on a dot
+            function toggleContent(dot) {
+                const year = dot.getAttribute('data-year');
+                const contentId = `content-${year}`;
+                const content = document.getElementById(contentId);
+                
+                // If there's an active content and it's not the one we're clicking
+                if (activeContent && activeContent !== content) {
+                    activeContent.classList.remove('active');
+                    
+                    // Find and remove active class from the corresponding dot
+                    timelineDots.forEach(d => {
+                        if (d !== dot) {
+                            d.classList.remove('active');
+                        }
+                    });
+                }
+                
+                // Toggle the clicked content
+                if (content) {
+                    content.classList.toggle('active');
+                    dot.classList.toggle('active');
+                    
+                    // Update active content reference
+                    if (content.classList.contains('active')) {
+                        activeContent = content;
+                        
+                        // Create confetti effect for achievements
+                        if (content.classList.contains('achievement')) {
+                            createConfetti(content);
+                        }
+                        
+                        // Scroll to content with smooth animation
+                        setTimeout(() => {
+                            content.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        }, 300);
+                    } else {
+                        activeContent = null;
+                    }
+                }
+            }
+            
+            // Create confetti effect for achievements
+            function createConfetti(element) {
+                const colors = ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0'];
+                const confettiCount = 50;
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.width = `${Math.random() * 10 + 5}px`;
+                    confetti.style.height = `${Math.random() * 10 + 5}px`;
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.animation = `confetti-fall ${Math.random() * 3 + 2}s linear forwards`;
+                    confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                    
+                    element.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        if (element.contains(confetti)) {
+                            element.removeChild(confetti);
+                        }
+                    }, 5000);
+                }
+            }
+            
+            // 3D Tilt Effect
+            function handleTiltEffect(e, element) {
+                const rect = element.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const tiltX = (y - centerY) / 20;
+                const tiltY = (centerX - x) / 20;
+                
+                element.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            }
+            
+            function resetTilt(element) {
+                element.style.transform = 'rotateX(0) rotateY(0)';
+            }
+            
+            // Apply tilt effect to active content
+            document.addEventListener('mousemove', function(e) {
+                if (activeContent) {
+                    handleTiltEffect(e, activeContent);
+                }
+            });
+            
+            // Reset tilt when mouse leaves
+            timelineContents.forEach(content => {
+                content.addEventListener('mouseleave', function() {
+                    resetTilt(this);
+                });
+            });
+            
+            // Show tooltip on hover
+            function showTooltip(element, text) {
+                tooltip.textContent = text;
+                tooltip.classList.add('visible');
+                
+                const rect = element.getBoundingClientRect();
+                tooltip.style.top = `${rect.top - 30}px`;
+                tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                tooltip.style.transform = 'translateX(-50%)';
+            }
+            
+            function hideTooltip() {
+                tooltip.classList.remove('visible');
+            }
+            
+            // Event Listeners
+            phaseButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const phase = this.getAttribute('data-phase');
+                    filterByPhase(phase);
+                    currentIndex = 0;
+                });
+                
+                // Add tooltip to phase buttons
+                btn.addEventListener('mouseenter', function() {
+                    const phase = this.getAttribute('data-phase');
+                    let tooltipText = '';
+                    
+                    switch(phase) {
+                        case 'early-years':
+                            tooltipText = 'My childhood and early development';
+                            break;
+                        case 'education':
+                            tooltipText = 'My academic journey';
+                            break;
+                        case 'career':
+                            tooltipText = 'My professional experiences';
+                            break;
+                        case 'personal':
+                            tooltipText = 'Personal growth and milestones';
+                            break;
+                    }
+                    
+                    showTooltip(this, tooltipText);
+                });
+                
+                btn.addEventListener('mouseleave', hideTooltip);
+            });
+            
+            timelineDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    toggleContent(this);
+                });
+            });
+            
+            prevBtn.addEventListener('click', () => navigateTimeline('prev'));
+            nextBtn.addEventListener('click', () => navigateTimeline('next'));
+            allBtn.addEventListener('click', () => filterByPhase('all'));
+            
+            // Initialize timeline
+            showTimelineItems();
+            
+            // Add emotion icon interactions
+            const emotionIcons = document.querySelectorAll('.emotion-icon');
+            emotionIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        const originalIcon = this.innerHTML;
+                        this.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        setTimeout(() => {
+                            this.innerHTML = originalIcon;
+                        }, 1000);
+                    }
+                });
+                
+                // Add tooltip to emotion icons
+                icon.addEventListener('mouseenter', function() {
+                    let tooltipText = '';
+                    
+                    if (this.classList.contains('happy')) {
+                        tooltipText = 'Happy Memory';
+                    } else if (this.classList.contains('challenging')) {
+                        tooltipText = 'Challenging Experience';
+                    } else if (this.classList.contains('exciting')) {
+                        tooltipText = 'Exciting Moment';
+                    }
+                    
+                    showTooltip(this, tooltipText);
+                });
+                
+                icon.addEventListener('mouseleave', hideTooltip);
+            });
+            
+            // Handle keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    navigateTimeline('prev');
+                } else if (e.key === 'ArrowRight') {
+                    navigateTimeline('next');
+                } else if (e.key === 'Escape' && activeContent) {
+                    // Close active content when pressing Escape
+                    activeContent.classList.remove('active');
+                    timelineDots.forEach(dot => dot.classList.remove('active'));
+                    activeContent = null;
+                }
+            });
+            
+            // Make the first dot active by default for each phase
+            function activateFirstDotInPhase() {
+                const firstItem = document.querySelector(`.timeline-item[data-phase="${activePhase}"]`);
+                if (firstItem) {
+                    const firstDot = firstItem.querySelector('.timeline-dot');
+                    if (firstDot) {
+                        firstDot.click();
+                    }
+                }
+            }
+            
+            // Activate first dot after initial load
+            setTimeout(activateFirstDotInPhase, 1500);
+            
+            // Handle window resize for responsive adjustments
+            window.addEventListener('resize', function() {
+                // Recalculate positions if needed
+                if (activeContent) {
+                    setTimeout(() => {
+                        activeContent.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }, 300);
+                }
+            });
+            
+            // Add touch swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe left, go next
+                    navigateTimeline('next');
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe right, go previous
+                    navigateTimeline('prev');
+                }
+            }
+            
+            // Scroll indicator
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    scrollIndicator.classList.add('visible');
+                } else {
+                    scrollIndicator.classList.remove('visible');
+                }
+            });
+            
+            scrollIndicator.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Add animation to navigation buttons
+            prevBtn.addEventListener('mouseenter', function() {
+                this.querySelector('i').style.transform = 'translateX(-5px)';
+            });
+            
+            prevBtn.addEventListener('mouseleave', function() {
+                this.querySelector('i').style.transform = 'translateX(0)';
+            });
+            
+            nextBtn.addEventListener('mouseenter', function() {
+                this.querySelector('i').style.transform = 'translateX(5px)';
+            });
+            
+            nextBtn.addEventListener('mouseleave', function() {
+                this.querySelector('i').style.transform = 'translateX(0)';
+            });
+            
+            // Add tooltip to navigation buttons
+            prevBtn.addEventListener('mouseenter', function() {
+                showTooltip(this, 'Previous Event');
+            });
+            
+            prevBtn.addEventListener('mouseleave', hideTooltip);
+            
+            nextBtn.addEventListener('mouseenter', function() {
+                showTooltip(this, 'Next Event');
+            });
+            
+            nextBtn.addEventListener('mouseleave', hideTooltip);
+            
+            allBtn.addEventListener('mouseenter', function() {
+                showTooltip(this, 'View All Events');
+            });
+            
+            allBtn.addEventListener('mouseleave', hideTooltip);
+        });
+    </script>
+</body>
+</html>
